@@ -1,0 +1,19 @@
+{
+  "name": "employee-manager",
+  "version": "1.0.0",
+  "description": "Inquirer-based SQL database user interface designed to work within a Terminal.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shrcker/Employee-Manager.git"
+  },
+  "author": "Shrcker",
+  "license": "MIT",
+  "dependencies": {
+    "inquirer": "^8.2.4",
+    "mysql2": "^3.9.7"
+  }
+}
