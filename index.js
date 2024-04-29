@@ -2,24 +2,12 @@ const inquirer = require("inquirer");
 const mysql = require("mysql2");
 require("dotenv").config();
 
-const connection = await mysql.createConnection({
+const connection = mysql.createConnection({
   host: "localhost",
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
   user: process.env.DB_USER,
 });
-
-const selectDepartment = () => {
-	try {
-		const [results] = await connection.query(
-			"SELECT * FROM department";
-		);
-		
-		console.log(results);
-	} catch (error) {
-		console.log(error);
-	}
-}
 
 const userChoices = [
   "View all departments",
@@ -28,21 +16,46 @@ const userChoices = [
   "Add department",
   "Add role",
   "Add employee",
+  "Quit",
 ];
 
-inquirer
-  .prompt([
-    {
-      type: "list",
-      message: "What would you like to do?",
-      name: "choice",
-      choices: userChoices,
-    },
-  ])
-  .then((choice) => {
-    switch (choice) {
-      case choice === userChoices[0]:
-        selectDepartment();
-        break;
+const selectDepartment = (table) => {
+  connection.query(`SELECT * FROM ${table}`, (error, results) => {
+    if (error) {
+      console.alert(error);
+    } else {
+      // Try to remove the index of this table later if there's time
+      console.table(results);
+      userPrompts();
     }
   });
+};
+
+const userPrompts = () => {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        message: "What would you like to do?",
+        name: "choice",
+        choices: userChoices,
+      },
+    ])
+    .then((input) => {
+      switch (input.choice) {
+        case userChoices[0]:
+          selectDepartment("department");
+          break;
+        case userChoices[1]:
+          selectDepartment("role");
+          break;
+        case userChoices[2]:
+          selectDepartment("employee");
+          break;
+        case userChoices[6]:
+          process.exit();
+      }
+    });
+};
+
+userPrompts();
