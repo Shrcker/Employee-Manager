@@ -19,7 +19,7 @@ const userChoices = [
   "Quit",
 ];
 
-const selectDepartment = (table) => {
+const selectTable = (table) => {
   connection.query(`SELECT * FROM ${table}`, (error, results) => {
     if (error) {
       console.alert(error);
@@ -29,6 +29,52 @@ const selectDepartment = (table) => {
       userPrompts();
     }
   });
+};
+
+const addRow = (table) => {
+  switch (table) {
+    case "department":
+      inquirer
+        .prompt([
+          {
+            type: "input",
+            message: "What is the department you'd like to add?",
+            name: "title",
+          },
+        ])
+        .then((input) => {
+          connection.query(
+            `INSERT INTO department (name) VALUES ("${input.title}");`
+          );
+        });
+      break;
+    case "role":
+      inquirer
+        .prompt([
+          {
+            type: "input",
+            message: "What role are you adding?",
+            name: "title",
+          },
+          {
+            type: "input",
+            message: "What is this role's average salary?",
+            name: "salary",
+          },
+          {
+            type: "input",
+            message:
+              "Which department does this role belong to? Please input an ID number for that department.",
+            name: "department",
+          },
+        ])
+        .then((input) => {
+          connection.query(`
+						INSERT INTO role (title, salary, department_id)
+						VALUES ("${input.title}", ${input.salary}, ${input.department});`);
+        });
+  }
+  selectTable(table);
 };
 
 const userPrompts = () => {
@@ -44,13 +90,16 @@ const userPrompts = () => {
     .then((input) => {
       switch (input.choice) {
         case userChoices[0]:
-          selectDepartment("department");
+          selectTable("department");
           break;
         case userChoices[1]:
-          selectDepartment("role");
+          selectTable("role");
           break;
         case userChoices[2]:
-          selectDepartment("employee");
+          selectTable("employee");
+          break;
+        case userChoices[3]:
+          addRow("department");
           break;
         case userChoices[6]:
           process.exit();
