@@ -9,6 +9,8 @@ const connection = mysql.createConnection({
   user: process.env.DB_USER,
 });
 
+// Function to capitalize the first letter of each input
+// Done to match user input with database format
 const capitalizeFirst = (word) => {
   const wordList = word.split(" ");
   const wordEnd = wordList.map((currentWord) => currentWord.slice(1).toLowerCase());
